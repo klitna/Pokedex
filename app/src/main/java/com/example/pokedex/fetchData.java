@@ -6,8 +6,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//import com.ahmadrosid.svgloader.SvgLoader;
-//import com.squareup.picasso.Picasso;
+import com.ahmadrosid.svgloader.SvgLoader;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,22 +17,32 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class fetchData extends AsyncTask<Void, Void, Void> {
-
+    public static String id = "";
+    protected static ArrayList<String> allExistingTypes;
+    private static String dataType="";
     protected String data = "";
     protected String results = "";
-    protected ArrayList<String> strTypes; // Create an ArrayList object
+    protected static ArrayList<String> strTypes; // Create an ArrayList object
     protected String pokSearch;
+    protected String pokSearchTypes = pokSearch;
 
     public fetchData(String pokSearch) {
         this.pokSearch = pokSearch;
         strTypes = new ArrayList<String>();
+    }
+
+    public static String getId() throws JSONException {
+        return id;
     }
 
     @Override
@@ -79,20 +89,20 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
             results += "Name: " + jObject.getString("name").toUpperCase() + "\n" +
                         "Height: " + jObject.getString("height") + "\n" +
                         "Weight: " + jObject.getString("weight");
-
+            id=jObject.getString("id");
             // Get img SVG
-//            JSONObject sprites = new JSONObject(jObject.getString("sprites"));
-//            JSONObject other = new JSONObject(sprites.getString("other"));
-//            JSONObject dream_world = new JSONObject(other.getString("dream_world"));
-//            img  = dream_world.getString("front_default");
+            JSONObject sprites = new JSONObject(jObject.getString("sprites"));
+            JSONObject other = new JSONObject(sprites.getString("other"));
+            JSONObject dream_world = new JSONObject(other.getString("dream_world"));
+            img  = dream_world.getString("front_default");
 
             // Get type/types
-//            JSONArray types = new JSONArray(jObject.getString("types"));
-//            for(int i=0; i<types.length(); i++){
-//                JSONObject type = new JSONObject(types.getString(i));
-//                JSONObject type2  = new JSONObject(type.getString("type"));
-//                strTypes.add(type2.getString("name"));
-//            }
+            JSONArray types = new JSONArray(jObject.getString("types"));
+            for(int i=0; i<types.length(); i++){
+                JSONObject type = new JSONObject(types.getString(i));
+                JSONObject type2  = new JSONObject(type.getString("type"));
+                strTypes.add(type2.getString("name"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -102,14 +112,49 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
         MainActivity.txtDisplay.setText(this.results);
 
 //        // Set main img
-//        SvgLoader.pluck()
-//                .with(MainActivity.act)
-//                .load(img, MainActivity.imgPok);
+        SvgLoader.pluck()
+                .with(MainActivity.act)
+                .load(img, MainActivity.imgPok);
 //
 //        // Set img types
-//        for(int i=0; i<strTypes.size(); i++){
-//            MainActivity.imgType[i].setImageResource(MainActivity.act.getResources().getIdentifier(strTypes.get(i), "drawable", MainActivity.act.getPackageName()));
-//        }
+        for(int i=0; i<strTypes.size(); i++){
+            MainActivity.imgType[i].setImageResource(MainActivity.act.getResources().getIdentifier(strTypes.get(i), "drawable", MainActivity.act.getPackageName()));
+        }
+    }
 
+    public static ArrayList<String> getAllExistingTypes(){
+        int pokTypeSearch=1;
+        ArrayList<String> types = new ArrayList<String>();
+        try {
+            //Make API connection
+            URL url = new URL("https://pokeapi.co/api/v2/type/" + pokTypeSearch);
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+            // Read API results
+            InputStream inputStream = httpURLConnection.getInputStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Build JSON String
+            String line = null;
+            while ((line = bufferedReader.readLine()) != null) {
+                sBuilder.append(line + "\n");
+            }
+
+            inputStream.close();
+            dataType = sBuilder.toString();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject jObject = null;
+        try {
+            types.add(jObject.getString("name"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return types;
     }
 }
