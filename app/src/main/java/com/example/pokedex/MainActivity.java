@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity{
     public static String pickedType="";
     public static ImageView [] imgType;
     public static ArrayList<Integer>ids=new ArrayList<Integer>();
+    public static ArrayList<String>pokemonsOfType=new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         pickedType=types[which];
+                        searchPokemon(pickedType, true);
                     }
                 });
                 pickTypeDialog.show();
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         }
-        searchPokemon(Integer.toString(id));
+        searchPokemon(Integer.toString(id), false);
     }
 
     public static String getPickedType(){
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         }
-        searchPokemon(Integer.toString(id));
+        searchPokemon(Integer.toString(id), false);
     }
 
 
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity{
 
         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                searchPokemon(input.getText().toString());
+                searchPokemon(input.getText().toString(), false);
             }
         });
 
@@ -180,8 +182,8 @@ public class MainActivity extends AppCompatActivity{
         alert.show();
     }
 
-    public void searchPokemon(String pok){
-        fetchData process = new fetchData(pok, false);
+    public void searchPokemon(String pok, boolean isType){
+        fetchData process = new fetchData(pok, isType);
         process.execute();
     }
 }
