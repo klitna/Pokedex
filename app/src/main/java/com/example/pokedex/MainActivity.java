@@ -105,26 +105,19 @@ public class MainActivity extends AppCompatActivity{
     private void goToNext() throws JSONException {
         String pokSearch = fetchData.getId();
         int id=Integer.parseInt(pokSearch);
-        if(ids.size()==898) {
-            id++;
-            if (id ==899)
-                id = 1;
-        }
-        else
-        {
-            int index;
-            boolean found = false;
-            for(int i=0; i<ids.size()&&!found; i++){
-                if(ids.get(i).equals(pokSearch))
-                {
-                    found = true;
-                    index = i;
-                    if(index==ids.size()-1)
-                        index=1;
-                    id = ids.get(index-1);
-                }
+        int index;
+        boolean found = false;
+        for(int i=0; i<ids.size()&&!found; i++){
+            if(ids.get(i).toString().equals(pokSearch))
+            {
+                found = true;
+                index = i+1;
+                if(index==ids.size())
+                    index=0;
+                id = ids.get(index);
             }
         }
+
         searchPokemon(Integer.toString(id), false);
     }
 
@@ -135,24 +128,16 @@ public class MainActivity extends AppCompatActivity{
     private void goToPrevious() throws JSONException {
         String pokSearch = fetchData.getId();
         int id=Integer.parseInt(pokSearch);
-        if(ids.size()==898) {
-            id--;
-            if (id <= 0)
-                id = 898;
-        }
-        else
-        {
-            int index;
-            boolean found = false;
-            for(int i=0; i<ids.size()&&!found; i++){
-                if(ids.get(i).equals(pokSearch))
-                {
-                    found = true;
-                    index = i;
-                    if(index<0)
-                        index=ids.size();
-                    id = ids.get(index-1);
-                }
+        int index;
+        boolean found = false;
+        for(int i=0; i<ids.size()&&!found; i++){
+            if(ids.get(i).toString().equals(pokSearch))
+            {
+                found = true;
+                index = i-1;
+                if(index<0)
+                    index=ids.size()-1;
+                id = ids.get(index);
             }
         }
         searchPokemon(Integer.toString(id), false);
