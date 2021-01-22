@@ -22,6 +22,8 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import static java.lang.String.valueOf;
+
 public class MainActivity extends AppCompatActivity{
 
     public static Activity act;
@@ -30,7 +32,8 @@ public class MainActivity extends AppCompatActivity{
     public static TextView idDisplay;
     public static String pickedType="";
     public static ImageView [] imgType;
-    public static ArrayList<Integer>ids=new ArrayList<Integer>();
+    public static String pokeTemp;
+    public static ArrayList<String>ids=new ArrayList<String>();
     public static ArrayList<String>pokemonsOfType=new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,10 @@ public class MainActivity extends AppCompatActivity{
         imgType[1] = findViewById(R.id.imgType1);
 
         String pokSearch = "1";
-        for(int i=0; i<898; i++)
-            ids.add(i+1);
+        for(int i=0; i<898; i++){
+            ids.add(valueOf(i+1));
+        }
+
         fetchData process = new fetchData(pokSearch, false);
         process.execute();
 
@@ -94,21 +99,23 @@ public class MainActivity extends AppCompatActivity{
                     public void onClick(DialogInterface dialog, int which) {
                         pickedType=types[which];
                         searchPokemon(pickedType, true);
+                        searchPokemon(ids.get(0), false);
                     }
                 });
                 pickTypeDialog.show();
             }
+
         });
 
     }
 
     private void goToNext() throws JSONException {
         String pokSearch = fetchData.getId();
-        int id=Integer.parseInt(pokSearch);
+        String id = pokSearch;
         int index;
         boolean found = false;
         for(int i=0; i<ids.size()&&!found; i++){
-            if(ids.get(i).toString().equals(pokSearch))
+            if(ids.get(i).equals(pokSearch))
             {
                 found = true;
                 index = i+1;
@@ -118,7 +125,7 @@ public class MainActivity extends AppCompatActivity{
             }
         }
 
-        searchPokemon(Integer.toString(id), false);
+        searchPokemon(id, false);
     }
 
     public static String getPickedType(){
@@ -127,7 +134,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void goToPrevious() throws JSONException {
         String pokSearch = fetchData.getId();
-        int id=Integer.parseInt(pokSearch);
+        String id = pokSearch;
         int index;
         boolean found = false;
         for(int i=0; i<ids.size()&&!found; i++){
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity{
                 id = ids.get(index);
             }
         }
-        searchPokemon(Integer.toString(id), false);
+        searchPokemon(id, false);
     }
 
 

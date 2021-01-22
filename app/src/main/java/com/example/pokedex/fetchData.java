@@ -28,11 +28,11 @@ import java.util.Set;
 
 public class fetchData extends AsyncTask<Void, Void, Void> {
     public static String id = "";
-    protected static ArrayList<String> allExistingTypes;
+    public static ArrayList<String> pokeNamesOfType = null;
+    ArrayList<String> strTypes;
     private static String dataType="";
     protected String data = "";
     protected String results = "";
-    protected static ArrayList<String> strTypes; // Create an ArrayList object
     protected String search;
     protected String pokType;
     protected boolean isType;
@@ -84,12 +84,27 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid){
         JSONObject jObject = null;
         String img = "";
-        String typeName = "";
-        String typeObj="";
 
         try {
             jObject = new JSONObject(data);
 
+            if(isType){
+                pokeNamesOfType = new ArrayList<String>();
+                String firstPokemon = "";
+                JSONArray name = new JSONArray(jObject.getString("pokemon"));
+                for (int i = 0; i < name.length(); i++) {
+                    JSONObject pokemons = new JSONObject(name.getString(i));
+                    JSONObject pokeNames = new JSONObject(pokemons.getString("pokemon"));
+                    pokeNamesOfType.add(pokeNames.getString("name"));
+                }
+                MainActivity.ids.removeAll(MainActivity.ids);
+                MainActivity.ids.addAll(pokeNamesOfType);
+            }
+            else
+            {
+                id=jObject.getString("id");
+                MainActivity.ids.get(Integer.parseInt(id)).replace(MainActivity.ids.get(Integer.parseInt(id)),jObject.getString("name"));
+            }
             // Get JSON name, height, weight
             results += "Name: " + jObject.getString("name").toUpperCase() + "\n" +
                         "Height: " + jObject.getString("height") + "\n" +
@@ -125,41 +140,5 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
         for(int i=0; i<strTypes.size(); i++){
             MainActivity.imgType[i].setImageResource(MainActivity.act.getResources().getIdentifier(strTypes.get(i), "drawable", MainActivity.act.getPackageName()));
         }
-    }
-
-    public static ArrayList<String> getAllExistingTypes(){
-        int pokTypeSearch=1;
-        ArrayList<String> types = new ArrayList<String>();
-        try {
-            //Make API connection
-            URL url = new URL("https://pokeapi.co/api/v2/type/" + pokTypeSearch);
-
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-
-            // Read API results
-            InputStream inputStream = httpURLConnection.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder sBuilder = new StringBuilder();
-
-            // Build JSON String
-            String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
-                sBuilder.append(line + "\n");
-            }
-
-            inputStream.close();
-            dataType = sBuilder.toString();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject jObject = null;
-        try {
-            types.add(jObject.getString("name"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return types;
     }
 }
