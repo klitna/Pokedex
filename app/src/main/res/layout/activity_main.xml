@@ -134,4 +134,19 @@
         app:layout_constraintTop_toTopOf="@+id/imageView3"
         app:rippleColor="@color/cardview_shadow_end_color" />
 
+    <TextView
+        android:id="@+id/idTextView"
+        android:layout_width="52dp"
+        android:layout_height="36dp"
+        android:text="1"
+        android:textAlignment="textEnd"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/imgPok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.821"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.761"
+        android:gravity="end" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

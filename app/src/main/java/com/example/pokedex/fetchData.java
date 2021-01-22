@@ -33,11 +33,16 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
     protected String data = "";
     protected String results = "";
     protected static ArrayList<String> strTypes; // Create an ArrayList object
-    protected String pokSearch;
-    protected String pokSearchTypes = pokSearch;
+    protected String search;
+    protected String pokType;
+    protected boolean isType;
 
-    public fetchData(String pokSearch) {
-        this.pokSearch = pokSearch;
+    public fetchData(String search, boolean isType) {
+        this.isType=isType;
+        if(!isType)
+            this.search = "pokemon/"+search;
+        else
+            this.search="type/"+search;
         strTypes = new ArrayList<String>();
     }
 
@@ -49,8 +54,8 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         try {
             //Make API connection
-            URL url = new URL("https://pokeapi.co/api/v2/pokemon/" + pokSearch);
-            Log.i("logtest", "https://pokeapi.co/api/v2/pokemon/" + pokSearch);
+            URL  url = new URL("https://pokeapi.co/api/v2/" + search);
+            Log.i("logtest", "https://pokeapi.co/api/v2/" + search);
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
@@ -110,7 +115,7 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
 
         // Set info
         MainActivity.txtDisplay.setText(this.results);
-
+        MainActivity.idDisplay.setText((this.id));
 //        // Set main img
         SvgLoader.pluck()
                 .with(MainActivity.act)

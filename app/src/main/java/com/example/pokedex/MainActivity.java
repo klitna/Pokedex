@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity{
@@ -26,10 +27,10 @@ public class MainActivity extends AppCompatActivity{
     public static Activity act;
     public static TextView txtDisplay;
     public static ImageView imgPok;
-
-
+    public static TextView idDisplay;
+    public static String pickedType="";
     public static ImageView [] imgType;
-
+    public static ArrayList<Integer>ids=new ArrayList<Integer>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +40,15 @@ public class MainActivity extends AppCompatActivity{
         imgType = new ImageView[2];
 
         txtDisplay = findViewById(R.id.txtDisplay);
+        idDisplay = findViewById(R.id.idTextView);
         imgPok = findViewById(R.id.imgPok);
         imgType[0] = findViewById(R.id.imgType0);
         imgType[1] = findViewById(R.id.imgType1);
 
         String pokSearch = "1";
-        fetchData process = new fetchData(pokSearch);
+        for(int i=0; i<898; i++)
+            ids.add(i+1);
+        fetchData process = new fetchData(pokSearch, false);
         process.execute();
 
         Button btnRight = findViewById(R.id.btnRight);
@@ -81,20 +85,16 @@ public class MainActivity extends AppCompatActivity{
         ImageButton btnTypes = findViewById(R.id.btnTypes);
         btnTypes.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String [] types = new String[fetchData.getAllExistingTypes().size()];
-                for(int i=0; i<fetchData.getAllExistingTypes().size(); i++)
-                    types[i] = fetchData.getAllExistingTypes().get(i);
-                int size = fetchData.getAllExistingTypes().size();
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Pick a color");
-                builder.setItems(types, new DialogInterface.OnClickListener() {
+                String [] types = getResources().getStringArray(R.array.types);
+                AlertDialog.Builder pickTypeDialog = new AlertDialog.Builder(MainActivity.this);
+                pickTypeDialog.setTitle("Pick a type");
+                pickTypeDialog.setItems(types, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // the user clicked on colors[which
-                        // ]
+                        pickedType=types[which];
                     }
                 });
-                builder.show();
+                pickTypeDialog.show();
             }
         });
 
@@ -102,18 +102,57 @@ public class MainActivity extends AppCompatActivity{
 
     private void goToNext() throws JSONException {
         String pokSearch = fetchData.getId();
-        int id=Integer.parseInt(pokSearch)+1;
-        if(id >898)
-            id=1;
+        int id=Integer.parseInt(pokSearch);
+        if(ids.size()==898) {
+            id++;
+            if (id ==899)
+                id = 1;
+        }
+        else
+        {
+            int index;
+            boolean found = false;
+            for(int i=0; i<ids.size()&&!found; i++){
+                if(ids.get(i).equals(pokSearch))
+                {
+                    found = true;
+                    index = i;
+                    if(index==ids.size()-1)
+                        index=1;
+                    id = ids.get(index-1);
+                }
+            }
+        }
         searchPokemon(Integer.toString(id));
+    }
 
+    public static String getPickedType(){
+        return pickedType;
     }
 
     private void goToPrevious() throws JSONException {
         String pokSearch = fetchData.getId();
-        int id=Integer.parseInt(pokSearch)-1;
-        if(id <=0)
-            id=898;
+        int id=Integer.parseInt(pokSearch);
+        if(ids.size()==898) {
+            id--;
+            if (id <= 0)
+                id = 898;
+        }
+        else
+        {
+            int index;
+            boolean found = false;
+            for(int i=0; i<ids.size()&&!found; i++){
+                if(ids.get(i).equals(pokSearch))
+                {
+                    found = true;
+                    index = i;
+                    if(index<0)
+                        index=ids.size();
+                    id = ids.get(index-1);
+                }
+            }
+        }
         searchPokemon(Integer.toString(id));
     }
 
@@ -142,7 +181,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void searchPokemon(String pok){
-        fetchData process = new fetchData(pok);
+        fetchData process = new fetchData(pok, false);
         process.execute();
     }
 }
