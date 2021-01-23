@@ -110,8 +110,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void goToNext() throws JSONException {
-        String pokSearch = fetchData.getId();
-        String id = pokSearch;
+        String pokSearch = fetchData.getName();
         int index;
         boolean found = false;
         for(int i=0; i<ids.size()&&!found; i++){
@@ -121,11 +120,11 @@ public class MainActivity extends AppCompatActivity{
                 index = i+1;
                 if(index==ids.size())
                     index=0;
-                id = ids.get(index);
+                pokSearch = ids.get(index);
             }
         }
 
-        searchPokemon(id, false);
+        searchPokemon(pokSearch, false);
     }
 
     public static String getPickedType(){
@@ -133,8 +132,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void goToPrevious() throws JSONException {
-        String pokSearch = fetchData.getId();
-        String id = pokSearch;
+        String pokSearch = fetchData.getName();
         int index;
         boolean found = false;
         for(int i=0; i<ids.size()&&!found; i++){
@@ -144,10 +142,10 @@ public class MainActivity extends AppCompatActivity{
                 index = i-1;
                 if(index<0)
                     index=ids.size()-1;
-                id = ids.get(index);
+                pokSearch = ids.get(index);
             }
         }
-        searchPokemon(id, false);
+        searchPokemon(pokSearch, false);
     }
 
 

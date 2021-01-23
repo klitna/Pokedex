@@ -28,6 +28,7 @@ import java.util.Set;
 
 public class fetchData extends AsyncTask<Void, Void, Void> {
     public static String id = "";
+    public static String name = "";
     public static ArrayList<String> pokeNamesOfType = null;
     ArrayList<String> strTypes;
     private static String dataType="";
@@ -48,6 +49,10 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
 
     public static String getId() throws JSONException {
         return id;
+    }
+
+    public static String getName() throws JSONException {
+        return name;
     }
 
     @Override
@@ -100,16 +105,13 @@ public class fetchData extends AsyncTask<Void, Void, Void> {
                 MainActivity.ids.removeAll(MainActivity.ids);
                 MainActivity.ids.addAll(pokeNamesOfType);
             }
-            else
-            {
-                id=jObject.getString("id");
-                MainActivity.ids.get(Integer.parseInt(id)).replace(MainActivity.ids.get(Integer.parseInt(id)),jObject.getString("name"));
-            }
+
             // Get JSON name, height, weight
             results += "Name: " + jObject.getString("name").toUpperCase() + "\n" +
                         "Height: " + jObject.getString("height") + "\n" +
                         "Weight: " + jObject.getString("weight");
             id=jObject.getString("id");
+            name=jObject.getString("name");
             // Get img SVG
             JSONObject sprites = new JSONObject(jObject.getString("sprites"));
             JSONObject other = new JSONObject(sprites.getString("other"));
