@@ -166,6 +166,23 @@
         app:layout_constraintVertical_bias="0.949"
         app:rippleColor="@color/cardview_shadow_end_color" />
 
+    <Button
+        android:id="@+id/btnExit"
+        android:layout_width="41dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="264dp"
+        android:layout_marginRight="264dp"
+        android:shadowRadius="@android:integer/config_longAnimTime"
+        app:backgroundTint="@color/cardview_shadow_end_color"
+        app:iconTint="@color/cardview_shadow_end_color"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDisplay"
+        app:layout_constraintEnd_toEndOf="@+id/txtDisplay"
+        app:layout_constraintHorizontal_bias="0.946"
+        app:layout_constraintStart_toStartOf="@+id/txtDisplay"
+        app:layout_constraintTop_toTopOf="@+id/txtDisplay"
+        app:layout_constraintVertical_bias="0.93"
+        app:rippleColor="@color/cardview_shadow_end_color" />
+
     <TextView
         android:id="@+id/idTextView"
         android:layout_width="52dp"

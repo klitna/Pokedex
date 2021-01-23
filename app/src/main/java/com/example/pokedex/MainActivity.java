@@ -32,9 +32,7 @@ public class MainActivity extends AppCompatActivity{
     public static TextView idDisplay;
     public static String pickedType="";
     public static ImageView [] imgType;
-    public static String pokeTemp;
     public static ArrayList<String>ids=new ArrayList<String>();
-    public static ArrayList<String>pokemonsOfType=new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,11 +121,39 @@ public class MainActivity extends AppCompatActivity{
                         pickedType=types[which];
                         searchPokemon(pickedType, true);
                         searchPokemon(ids.get(0), false);
+                        dialog.dismiss();
                     }
                 });
                 pickTypeDialog.show();
             }
 
+        });
+
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle("Exit Pokedex");
+        alertDialog.setMessage("Sure you want to close Pokedex?");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                        System.exit(0);
+                        dialog.dismiss();
+                    }
+                } );
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                } );
+
+        Button btnExit = findViewById(R.id.btnExit);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.show();
+
+            }
         });
 
     }
@@ -227,5 +253,16 @@ public class MainActivity extends AppCompatActivity{
             return false;
         }
         return true;
+    }
+
+    public static void ask(final Activity activity, String title, String msg,
+                           DialogInterface.OnClickListener okListener,
+                           DialogInterface.OnClickListener cancelListener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton("OK", okListener);
+        alertDialog.setNegativeButton("Cancel", cancelListener);
+        alertDialog.show();
     }
 }
