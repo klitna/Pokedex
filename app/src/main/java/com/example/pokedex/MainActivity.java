@@ -49,16 +49,39 @@ public class MainActivity extends AppCompatActivity{
         imgType[0] = findViewById(R.id.imgType0);
         imgType[1] = findViewById(R.id.imgType1);
 
+
         String pokSearch = "1";
         for(int i=0; i<898; i++){
             ids.add(valueOf(i+1));
         }
-
         fetchData process = new fetchData(pokSearch, false);
         process.execute();
-
         Button btnRight = findViewById(R.id.btnRight);
         btnRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    goToNext();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Button btnUp = findViewById(R.id.btnUp);
+        btnUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    goToPrevious();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Button btnDown = findViewById(R.id.btnDown);
+        btnDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -112,17 +135,26 @@ public class MainActivity extends AppCompatActivity{
     private void goToNext() throws JSONException {
         String pokSearch = fetchData.getName();
         int index;
+        String pokSearchId = fetchData.getId();
         boolean found = false;
-        for(int i=0; i<ids.size()&&!found; i++){
-            if(ids.get(i).equals(pokSearch))
-            {
-                found = true;
-                index = i+1;
-                if(index==ids.size())
-                    index=0;
-                pokSearch = ids.get(index);
-            }
+        if(ids.size()==898) {
+            int id=Integer.parseInt(pokSearchId);
+            id++;
+            if (id ==899)
+                id = 1;
+            pokSearch=valueOf(id);
         }
+        else
+            for(int i=0; i<ids.size()&&!found; i++){
+                if(ids.get(i).equals(pokSearch))
+                {
+                    found = true;
+                    index = i+1;
+                    if(index==ids.size())
+                        index=0;
+                    pokSearch = ids.get(index);
+                }
+            }
 
         searchPokemon(pokSearch, false);
     }
@@ -135,16 +167,23 @@ public class MainActivity extends AppCompatActivity{
         String pokSearch = fetchData.getName();
         int index;
         boolean found = false;
-        for(int i=0; i<ids.size()&&!found; i++){
-            if(ids.get(i).toString().equals(pokSearch))
-            {
-                found = true;
-                index = i-1;
-                if(index<0)
-                    index=ids.size()-1;
-                pokSearch = ids.get(index);
-            }
+        if(ids.size()==898){
+            index=Integer.parseInt(fetchData.getId())-1;
+            if(index==1)
+                index=898;
+            pokSearch=ids.get(index-1);
         }
+        else
+            for(int i=0; i<ids.size()&&!found; i++){
+                if(ids.get(i).equals(pokSearch))
+                {
+                    found = true;
+                    index = i-1;
+                    if(index<0)
+                        index=ids.size()-1;
+                    pokSearch = ids.get(index);
+                }
+            }
         searchPokemon(pokSearch, false);
     }
 
@@ -175,5 +214,18 @@ public class MainActivity extends AppCompatActivity{
     public void searchPokemon(String pok, boolean isType){
         fetchData process = new fetchData(pok, isType);
         process.execute();
+    }
+
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
